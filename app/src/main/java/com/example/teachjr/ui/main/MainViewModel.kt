@@ -4,6 +4,7 @@ import android.telecom.Call
 import android.util.Log
 import androidx.lifecycle.*
 import com.example.teachjr.data.auth.model.CallStatus
+import com.example.teachjr.data.auth.model.FriendButtonType
 import com.example.teachjr.data.auth.model.FriendsListItem
 import com.example.teachjr.data.auth.model.UserModel
 import com.example.teachjr.data.main.repo.MainRepository
@@ -186,6 +187,28 @@ class MainViewModel
                 _outgoingCallStatus.postValue(Response.Error(result, null))
             }
         }
+    }
+
+    fun getPendingRequests(): List<FriendsListItem> {
+        val requestsList = mutableListOf<FriendsListItem>()
+
+        requestMap.value!!.keys.forEach { userUuid ->
+            val user = usersList.value!!.data!!.find {
+                it.uuid == userUuid
+            }
+            if(user != null) {
+                requestsList.add(
+                    FriendsListItem(
+                        uuid = user.uuid,
+                        name = user.name,
+                        email = user.email,
+                        btnType = FriendButtonType.REQUEST_RECEIVED
+                    )
+                )
+            }
+        }
+
+        return requestsList
     }
 
 }

@@ -15,6 +15,7 @@ import com.example.teachjr.databinding.FragmentHomeBinding
 import com.example.teachjr.ui.base.BaseFragment
 import com.example.teachjr.ui.main.MainViewModel
 import com.example.teachjr.ui.main.adapter.FriendsListAdapter
+import com.example.teachjr.ui.main.friendRequest.FriendRequestsBottomSheet
 import com.example.teachjr.utils.FirebasePaths
 import com.example.teachjr.utils.sealedClasses.Response
 import com.google.firebase.auth.FirebaseAuth
@@ -63,6 +64,14 @@ class AddFriendsFragment : BaseFragment<FragmentAddFriendsBinding>(
 
             friendsListAdapter = FriendsListAdapter(this@AddFriendsFragment)
             rvFriends.adapter = friendsListAdapter
+
+            btnPendingRequests.setOnClickListener {
+                val friendRequestsBottomSheet = FriendRequestsBottomSheet.newInstance()
+                friendRequestsBottomSheet.show(
+                    childFragmentManager,
+                    FriendRequestsBottomSheet::class.java.simpleName
+                )
+            }
 
         }
     }
