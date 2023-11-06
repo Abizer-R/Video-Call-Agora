@@ -43,6 +43,12 @@ class AuthRepositoryImpl
                 .child(currUser!!.uid)
                 .setValue(userModel)
                 .addOnSuccessListener {
+
+                    dbRef.getReference(FirebasePaths.FRIENDS_COLLECTION)
+                        .child(currUser!!.uid)
+                        .child(currUser!!.uid)
+                        .setValue(FirebasePaths.FRIENDS_STATUS_SELF)
+
                     continuation.resume(FirebaseConstants.STATUS_SUCCESSFUL)
                 }
                 .addOnFailureListener {

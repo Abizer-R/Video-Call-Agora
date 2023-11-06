@@ -5,6 +5,6 @@
         android:color="@color/primaryLight" />
 
     <corners
-        android:radius="5dp"/>
+        android:radius="10dp"/>
 
 </shape>

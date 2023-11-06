@@ -65,4 +65,9 @@ object FirebasePaths {
     const val CALL_STATUS_INCOMING_REQUEST = "incoming_request"
     const val CALL_STATUS_OUTGOING_REQUEST = "outgoing_request"
     const val CALL_STATUS_OUTGOING_REJECTED = "rejected"
+
+    const val FRIENDS_COLLECTION = "Friends_Collection"
+    const val FRIENDS_STATUS_SELF = "self"
+    const val FRIENDS_STATUS_REQUEST_SENT = "friend_request_sent"
+    const val FRIENDS_STATUS_REQUEST_RECEIVED = "friend_request_received"
 }

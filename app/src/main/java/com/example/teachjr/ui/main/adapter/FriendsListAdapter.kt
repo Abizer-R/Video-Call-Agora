@@ -4,6 +4,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.annotation.ColorRes
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -27,6 +28,11 @@ class FriendsListAdapter(
                 tvName.text = friendItem.name
                 root.setOnClickListener {
                     listener.onFriendClicked(currentList[adapterPosition])
+                }
+
+                if(friendItem.email.isNotBlank()) {
+                    tvEmail.text = friendItem.email
+                    tvEmail.isVisible = true
                 }
             }
         }

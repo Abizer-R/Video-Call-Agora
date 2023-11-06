@@ -36,6 +36,14 @@ class MainViewModel
     val friendsList: LiveData<Response<List<FriendsListItem>>>
         get() = _friendsList
 
+    private val _usersList = MutableLiveData<Response<List<FriendsListItem>>>()
+    val usersList: LiveData<Response<List<FriendsListItem>>>
+        get() = _usersList
+
+    private val _requestMap = MutableLiveData<Map<String, String>>(mapOf())
+    val requestMap: LiveData<Map<String, String>>
+        get() = _requestMap
+
 
     private val _callStatus = MutableLiveData<CallStatus>()
     val callStatus: LiveData<CallStatus>
@@ -61,9 +69,62 @@ class MainViewModel
         _friendsList.postValue(Response.Loading())
         Log.i(TAG, "StdTesting-ViewModel: Calling getCourselist")
         viewModelScope.launch {
-            val courseListDeferred = async { mainRepository.getFriendsList() }
-            _friendsList.postValue(courseListDeferred.await())
+            val friendsListDeferred = async { mainRepository.getFriendsList() }
+            _friendsList.postValue(friendsListDeferred.await())
         }
+    }
+
+    fun getUsersList() {
+        _usersList.postValue(Response.Loading())
+        Log.i(TAG, "StdTesting-ViewModel: Calling getCourselist")
+        viewModelScope.launch {
+            val usersListResponse = mainRepository.getUsersList()
+            when (usersListResponse) {
+                is Response.Success -> {
+                    val usersList = usersListResponse.data
+                    usersList?.let { list ->
+                        val newList = ArrayList(list)
+                        val iterator = newList.iterator()
+                        while (iterator.hasNext()) {
+                            val user = iterator.next()
+                            if(user.uuid == mainRepository.currentUser.uid) {
+                                iterator.remove()
+                                continue
+                            }
+
+                            val idx = friendsList.value?.data?.indexOfFirst {
+                                it.uuid == user.uuid
+                            } ?: -1
+                            if(idx >= 0 && idx < (friendsList.value?.data?.size ?: 0)) {
+                                iterator.remove()
+                            }
+                        }
+                        Log.e("TESTING2", "getUsersList: newList = ${newList}", )
+                        _usersList.postValue(Response.Success(newList))
+
+                    } ?: _usersList.postValue(Response.Error("null data", null))
+                }
+
+                else -> _usersList.postValue(usersListResponse)
+            }
+        }
+    }
+
+    fun getFilteredUsers(query: String): List<FriendsListItem> {
+        val filteredList = mutableListOf<FriendsListItem>()
+        if(usersList.value is Response.Success) {
+            usersList.value?.data?.forEach {
+                if(it.email.lowercase().contains(query.lowercase()) ||
+                    it.name.lowercase().contains(query.lowercase())) {
+                    filteredList.add(it)
+                }
+            }
+        }
+        return filteredList
+    }
+
+    fun sendFriendRequest(userUuid: String) = viewModelScope.launch{
+        mainRepository.sendFriendRequest(userUuid)
     }
 
     /**
@@ -85,6 +146,30 @@ class MainViewModel
                         currCallStatus = newVal
                         Log.e("TESTING", "observeCallStatus: newVal = $newVal", )
                         _callStatus.postValue(newVal)
+                    }
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
+
+    fun observeFriendRequests() = viewModelScope.launch {
+        try {
+            withContext(Dispatchers.IO) {
+                mainRepository.observeFriendRequests()
+                    .collect {responsePair ->
+                        val prevMap = mutableMapOf<String, String>()
+                        prevMap.putAll(_requestMap.value!!)
+
+                        if(responsePair.first) {
+                            prevMap.putAll(responsePair.second)
+                        } else {
+                            responsePair.second.keys.forEach {
+                                prevMap.remove(it)
+                            }
+                        }
+                        Log.e("TESTING2", "observeFriendRequests: prevMap = $prevMap", )
+                        _requestMap.postValue(prevMap)
                     }
             }
         } catch (e: Exception) {

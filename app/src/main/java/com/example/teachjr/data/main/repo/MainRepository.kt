@@ -32,7 +32,7 @@ class MainRepository
 ) {
 
     private val TAG = MainRepository::class.java.simpleName
-    private val currentUser: FirebaseUser
+    val currentUser: FirebaseUser
         get() = firebaseAuth.currentUser!!
 
 
@@ -84,16 +84,61 @@ class MainRepository
         }
     }
 
+    suspend fun getUsersList(): Response<List<FriendsListItem>> {
+        return suspendCoroutine { continuation ->
+            dbRef.getReference(FirebasePaths.USER_COLLECTION)
+                .addListenerForSingleValueEvent(object: ValueEventListener {
+                    override fun onDataChange(snapshot: DataSnapshot) {
+                        
+                        val usersList: MutableList<FriendsListItem> = ArrayList()
+
+                        for(item in snapshot.children) {
+                            val uuid = item.key.toString()
+                            val name = item.child("username").value.toString()
+                            val email = item.child("email").value.toString()
+                            
+                            usersList.add(FriendsListItem(uuid, name, email))
+                        }
+                        continuation.resume(Response.Success(usersList))
+                    }
+
+                    override fun onCancelled(error: DatabaseError) {
+                        Log.i(TAG, "StudentTesting_Repo: getCourseList = ${error.message}")
+                        continuation.resume(Response.Error(error.message, null))
+                    }
+
+                })
+        }
+    }
+
+    suspend fun sendFriendRequest(userUuid: String): String {
+        return suspendCoroutine { continuation ->
+
+            val collection = FirebasePaths.FRIENDS_COLLECTION
+            val updates = mutableMapOf<String, Any>()
+            updates["$collection/$userUuid/${currentUser.uid}"] = FirebasePaths.FRIENDS_STATUS_REQUEST_RECEIVED
+            updates["$collection/${currentUser.uid}/$userUuid"] = FirebasePaths.FRIENDS_STATUS_REQUEST_SENT
+
+            dbRef.reference.updateChildren(updates)
+                .addOnSuccessListener {
+                    continuation.resume(FirebaseConstants.STATUS_SUCCESSFUL)
+                }
+                .addOnFailureListener {
+                    continuation.resume(it.message.toString())
+                }
+        }
+    }
+
     /**
      * This flow will get cancelled when prof will leave the MarkAtdFragment
      */
     fun observeCallStatus(): Flow<CallStatus> =
         dbRef.getReference("/${FirebasePaths.USER_COLLECTION}/${currentUser.uid}/${FirebasePaths.CALL_STATUS_KEY}")
-            .observeChildEvent()
+            .observeCallStatusChildEvent()
             .catch { Log.i(TAG, "MainTesting_ProRepo - observeAttendance: ERROR = ${it.message}") }
 
 
-    private fun DatabaseReference.observeChildEvent(): Flow<CallStatus> = callbackFlow {
+    private fun DatabaseReference.observeCallStatusChildEvent(): Flow<CallStatus> = callbackFlow {
         val childEventListener = object : ChildEventListener {
             override fun onCancelled(error: DatabaseError) {
                 Log.i(TAG, "MainTesting_ProRepo: onCancelled = ${error.message}")
@@ -162,6 +207,60 @@ class MainRepository
 
             override fun onChildMoved(snapshot: DataSnapshot, previousChildName: String?) {
                 Log.i(TAG, "MainTesting_ProRepo - onChildMoved: snapshot - $snapshot, prevChildName - $previousChildName")
+                TODO("Not yet implemented")
+            }
+        }
+        addChildEventListener(childEventListener)
+        awaitClose {
+            removeEventListener(childEventListener)
+        }
+    }
+
+
+    fun observeFriendRequests(): Flow<Pair<Boolean, Map<String, String>>> =
+        dbRef.getReference("/${FirebasePaths.FRIENDS_COLLECTION}/${currentUser.uid}")
+            .observeFriendRequestsChildEvent()
+            .catch { Log.i(TAG, "MainTesting_ProRepo - observeAttendance: ERROR = ${it.message}") }
+
+
+    private fun DatabaseReference.observeFriendRequestsChildEvent(): Flow<Pair<Boolean, Map<String, String>>> = callbackFlow {
+        val childEventListener = object : ChildEventListener {
+            override fun onCancelled(error: DatabaseError) {
+                Log.e(TAG, "MainTesting_ProRepo: onCancelled = ${error.message}")
+                close(error.toException())
+            }
+
+            override fun onChildAdded(snapshot: DataSnapshot, previousChildName: String?) {
+                Log.e(TAG, "MainTesting_ProRepo - onChildAdded: snapshot - $snapshot, prevChildName - $previousChildName")
+
+                if(snapshot.value != FirebasePaths.FRIENDS_STATUS_SELF) {
+                    val mMap = mutableMapOf<String, String>()
+                    mMap[snapshot.key.toString()] = snapshot.value.toString()
+                    trySend(Pair(true, mMap)).isSuccess
+                }
+            }
+
+            override fun onChildChanged(snapshot: DataSnapshot, previousChildName: String?) {
+                Log.e(TAG, "MainTesting_ProRepo - onChildChanged: snapshot - $snapshot, prevChildName - $previousChildName")
+
+                if(snapshot.value != FirebasePaths.FRIENDS_STATUS_SELF) {
+                    val mMap = mutableMapOf<String, String>()
+                    mMap[snapshot.key.toString()] = snapshot.value.toString()
+                    trySend(Pair(true, mMap)).isSuccess
+                }
+            }
+
+            override fun onChildRemoved(snapshot: DataSnapshot) {
+                Log.e(TAG, "MainTesting_ProRepo - onChildRemoved: snapshot - $snapshot")
+                if(snapshot.value != FirebasePaths.FRIENDS_STATUS_SELF) {
+                    val mMap = mutableMapOf<String, String>()
+                    mMap[snapshot.key.toString()] = snapshot.value.toString()
+                    trySend(Pair(false, mMap)).isSuccess
+                }
+            }
+
+            override fun onChildMoved(snapshot: DataSnapshot, previousChildName: String?) {
+                Log.e(TAG, "MainTesting_ProRepo - onChildMoved: snapshot - $snapshot, prevChildName - $previousChildName")
                 TODO("Not yet implemented")
             }
         }
