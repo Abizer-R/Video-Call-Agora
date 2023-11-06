@@ -6,9 +6,7 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import androidx.lifecycle.lifecycleScope
-import com.example.teachjr.R
 import com.example.teachjr.databinding.ActivityAuthBinding
-import com.example.teachjr.ui.student.StudentActivity
 import com.example.teachjr.utils.ConnectionLiveData
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers

@@ -12,7 +12,7 @@ import androidx.navigation.fragment.findNavController
 import com.example.teachjr.R
 import com.example.teachjr.databinding.FragmentRegisterBinding
 import com.example.teachjr.ui.main.MainActivity
-import com.example.teachjr.ui.viewmodels.AuthViewModel
+import com.example.teachjr.ui.auth.AuthViewModel
 import com.example.teachjr.ui.student.StudentActivity
 import com.example.teachjr.utils.AuthUtils
 import com.example.teachjr.utils.sealedClasses.Response

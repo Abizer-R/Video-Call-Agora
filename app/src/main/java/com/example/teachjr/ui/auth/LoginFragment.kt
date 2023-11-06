@@ -1,6 +1,5 @@
 package com.example.teachjr.ui.auth
 
-import PreferenceManager
 import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -11,15 +10,11 @@ import android.widget.Toast
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import com.example.teachjr.databinding.FragmentLoginBinding
-import com.example.teachjr.databinding.FragmentRegisterBinding
 import com.example.teachjr.ui.main.MainActivity
-import com.example.teachjr.ui.student.StudentActivity
-import com.example.teachjr.ui.viewmodels.AuthViewModel
 import com.example.teachjr.utils.AuthUtils
 import com.example.teachjr.utils.sealedClasses.Response
-import com.google.firebase.auth.FirebaseAuth
+import com.example.teachjr.ui.auth.AuthViewModel
 import dagger.hilt.android.AndroidEntryPoint
-import javax.inject.Inject
 
 @AndroidEntryPoint
 class LoginFragment : Fragment() {
