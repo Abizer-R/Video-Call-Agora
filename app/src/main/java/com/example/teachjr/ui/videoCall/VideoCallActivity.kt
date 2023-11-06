@@ -2,8 +2,6 @@ package com.example.teachjr.ui.videoCall
 
 import PreferenceManager
 import android.Manifest
-import android.R
-import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Color
 import android.os.Bundle
@@ -17,6 +15,7 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.core.view.isVisible
 import androidx.lifecycle.lifecycleScope
 import com.example.teachjr.data.auth.model.CallStatus
 import com.example.teachjr.databinding.ActivityMainBinding
@@ -26,7 +25,8 @@ import com.example.teachjr.ui.main.MainViewModel
 import com.example.teachjr.utils.ConnectionLiveData
 import com.example.teachjr.utils.FirebasePaths
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.database.FirebaseDatabase
+import com.example.teachjr.R
+import com.example.teachjr.utils.AppUtils
 import dagger.hilt.android.AndroidEntryPoint
 import io.agora.rtc2.ChannelMediaOptions
 import io.agora.rtc2.Constants
@@ -55,6 +55,9 @@ class VideoCallActivity : AppCompatActivity() {
     private val mainViewModel by viewModels<MainViewModel>()
 
     private var preferenceManager: PreferenceManager? = null
+
+    private var isMuted: Boolean = false
+    private var isVideoCamOff: Boolean = false
 
     /**
      * AGORA STUFF START HERE ----------
@@ -89,6 +92,24 @@ class VideoCallActivity : AppCompatActivity() {
             showToast("Remote user offline $uid $reason")
             runOnUiThread { remoteSurfaceView!!.visibility = View.GONE }
         }
+
+        override fun onUserMuteVideo(uid: Int, muted: Boolean) {
+            super.onUserMuteVideo(uid, muted)
+
+            if(muted) {
+                AppUtils.getBitMapFromSurfaceView(remoteSurfaceView!!) {bitmap ->
+                    val blurBitmap = AppUtils.blur(this@VideoCallActivity, bitmap)
+                    runOnUiThread {
+                        binding.remoteThumbnail.setImageBitmap(blurBitmap)
+                        binding.remoteThumbnail.isVisible = true
+                    }
+                }
+            } else {
+                runOnUiThread {
+                    binding.remoteThumbnail.isVisible = false
+                }
+            }
+        }
     }
 
     private fun setupVideoSDKEngine() {
@@ -100,8 +121,49 @@ class VideoCallActivity : AppCompatActivity() {
             agoraEngine = RtcEngine.create(config)
             // By default, the video module is disabled, call enableVideo to enable it.
             agoraEngine?.enableVideo()
+            agoraEngine!!.muteLocalVideoStream(false)
+            setupCallControls()
+
         } catch (e: Exception) {
             showToast(e.toString())
+        }
+    }
+
+    private fun setupCallControls() {
+        with(binding) {
+            btnMicToggle.setOnClickListener {
+                if(isMuted) {
+                    btnMicToggle.setImageResource(R.drawable.ic_mic_on)
+                    agoraEngine!!.enableLocalAudio(true)
+                } else {
+                    btnMicToggle.setImageResource(R.drawable.ic_mic_off)
+                    agoraEngine!!.enableLocalAudio(false)
+                }
+                isMuted = isMuted.not()
+            }
+
+            btnVideoCamToggle.setOnClickListener {
+                if(isVideoCamOff) {
+                    btnVideoCamToggle.setImageResource(R.drawable.ic_videocam_on)
+                    agoraEngine!!.muteLocalVideoStream(false)
+                    binding.localThumbnail.isVisible = false
+                } else {
+                    btnVideoCamToggle.setImageResource(R.drawable.ic_videocam_off)
+                    agoraEngine!!.muteLocalVideoStream(true)
+                    AppUtils.getBitMapFromSurfaceView(localSurfaceView!!) {bitmap ->
+                        val blurBitmap = AppUtils.blur(this@VideoCallActivity, bitmap)
+                        runOnUiThread {
+                            binding.localThumbnail.setImageBitmap(blurBitmap)
+                            binding.localThumbnail.isVisible = true
+                        }
+                    }
+                }
+                isVideoCamOff = isVideoCamOff.not()
+            }
+
+            btnCameraFlip.setOnClickListener {
+                agoraEngine!!.switchCamera()
+            }
         }
     }
 

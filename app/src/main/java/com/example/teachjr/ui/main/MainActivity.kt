@@ -14,6 +14,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import androidx.lifecycle.lifecycleScope
 import com.example.teachjr.data.auth.model.CallStatus
+import com.example.teachjr.data.auth.model.FriendsListItem
 import com.example.teachjr.databinding.ActivityMainBinding
 import com.example.teachjr.ui.auth.AuthActivity
 import com.example.teachjr.ui.main.adapter.FriendsListAdapter
@@ -31,7 +32,7 @@ import kotlinx.coroutines.withContext
 
 
 @AndroidEntryPoint
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), FriendsListAdapter.FriendsAdapterListener {
 
     private val TAG = MainActivity::class.java.simpleName
     private lateinit var binding: ActivityMainBinding
@@ -43,20 +44,20 @@ class MainActivity : AppCompatActivity() {
 
     private var preferenceManager: PreferenceManager? = null
 
-    private val friendsListAdapter = FriendsListAdapter(
-        onItemClicked = { item ->
-            mainViewModel.otherUid = item.uuid
-            mainViewModel.pushCallNotification(
-                item.uuid,
-                callStatus = CallStatus(
-                    otherUserName = preferenceManager?.getUsername(),
-                    otherUserEmail = preferenceManager?.getEmail(),
-                    otherUserUuid = FirebaseAuth.getInstance().currentUser?.uid,
-                    status = CALL_STATUS_INCOMING_REQUEST
-                )
+    private lateinit var friendsListAdapter: FriendsListAdapter
+
+    override fun onFriendClicked(friendItem: FriendsListItem) {
+        mainViewModel.otherUid = friendItem.uuid
+        mainViewModel.pushCallNotification(
+            friendItem.uuid,
+            callStatus = CallStatus(
+                otherUserName = preferenceManager?.getUsername(),
+                otherUserEmail = preferenceManager?.getEmail(),
+                otherUserUuid = FirebaseAuth.getInstance().currentUser?.uid,
+                status = CALL_STATUS_INCOMING_REQUEST
             )
-        }
-    )
+        )
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -90,6 +91,7 @@ class MainActivity : AppCompatActivity() {
                 finish()
             }
 
+            friendsListAdapter = FriendsListAdapter(this@MainActivity)
             rvFriends.adapter = friendsListAdapter
 
             btnAccept.setOnClickListener {
@@ -131,7 +133,7 @@ class MainActivity : AppCompatActivity() {
                 }
                 is Response.Success -> {
                     if(it.data != null) {
-                        friendsListAdapter.updateList(it.data)
+                        friendsListAdapter.submitList(it.data)
                     } else {
                         showToast("List is null")
                     }

@@ -1,48 +1,50 @@
 package com.example.teachjr.ui.main.adapter
 
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.annotation.ColorRes
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.teachjr.R
 import com.example.teachjr.data.auth.model.FriendsListItem
-import com.example.teachjr.data.model.RvProfCourseListItem
-import com.example.teachjr.data.model.RvStdCourseListItem
+import com.example.teachjr.databinding.FriendsListItemBinding
 
 class FriendsListAdapter(
-    private val onItemClicked: (FriendsListItem) -> Unit
-): RecyclerView.Adapter<FriendsListAdapter.CourseViewHolder>() {
+    private val listener: FriendsAdapterListener
+): ListAdapter<FriendsListItem, FriendsListAdapter.FriendViewHolder>(
+    object : DiffUtil.ItemCallback<FriendsListItem>() {
+        override fun areItemsTheSame(oldItem: FriendsListItem, newItem: FriendsListItem) = oldItem.uuid == newItem.uuid
+        override fun areContentsTheSame(oldItem: FriendsListItem, newItem: FriendsListItem) = oldItem == newItem
 
-    private var friendsList: List<FriendsListItem> = ArrayList()
+    })
+{
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CourseViewHolder {
-        val inflater = LayoutInflater.from(parent.context)
-        val itemView = inflater.inflate(R.layout.friends_list_item, parent, false)
-        return CourseViewHolder(itemView)
-    }
-
-    override fun onBindViewHolder(holder: CourseViewHolder, position: Int) {
-        holder.apply {
-
-            tvName.text = friendsList[position].name
-//            tvProfName.text = courses[position].profName
-            holder.itemView.setOnClickListener {
-                onItemClicked.invoke(friendsList[position])
+    inner class FriendViewHolder(private val binding: FriendsListItemBinding) : RecyclerView.ViewHolder(binding.root) {
+        fun bind(friendItem: FriendsListItem) {
+            with(binding) {
+                tvName.text = friendItem.name
+                root.setOnClickListener {
+                    listener.onFriendClicked(currentList[adapterPosition])
+                }
             }
         }
     }
 
-    fun updateList(updatedCourses: List<FriendsListItem>) {
-        friendsList = updatedCourses
-        notifyDataSetChanged()
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FriendViewHolder {
+        return FriendViewHolder(
+            FriendsListItemBinding.inflate(
+                LayoutInflater.from(parent.context), parent, false
+            )
+        )
     }
 
-    override fun getItemCount(): Int {
-        return friendsList.size
+    override fun onBindViewHolder(holder: FriendViewHolder, position: Int) {
+        holder.bind(currentList[position])
     }
 
-    class CourseViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        var tvName = itemView.findViewById<TextView>(R.id.tvName)
+    interface FriendsAdapterListener {
+        fun onFriendClicked(friendItem: FriendsListItem)
     }
 }

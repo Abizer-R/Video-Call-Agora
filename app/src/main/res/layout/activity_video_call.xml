@@ -23,6 +23,12 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:background="@android:color/darker_gray" />
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/remoteThumbnail"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:visibility="gone"/>
         </com.google.android.material.card.MaterialCardView>
 
         <androidx.constraintlayout.widget.Guideline
@@ -54,27 +60,93 @@
                 android:layout_height="match_parent"
                 android:background="@android:color/darker_gray"
                 android:padding="2dp"/>
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/localThumbnail"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:visibility="gone"/>
         </com.google.android.material.card.MaterialCardView>
 
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="120dp"
+            android:translationZ="10dp"
+            app:layout_constraintBottom_toBottomOf="parent">
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/bg_rv_section"
+                android:backgroundTint="@color/dark_panel"
+                android:alpha="0.4"
+                android:layout_margin="16dp"/>
+
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/btnLeave"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:background="@drawable/fab_shape"
+                android:backgroundTint="@color/red"
+                android:padding="16dp"
+                android:src="@drawable/ic_call_end"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/btnVideoCamToggle"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:tint="@color/white" />
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/btnVideoCamToggle"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:background="@drawable/fab_shape"
+                android:backgroundTint="@color/dark_panel"
+                android:padding="16dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/btnCameraFlip"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toEndOf="@+id/btnLeave"
+                app:layout_constraintTop_toTopOf="parent"
+                app:srcCompat="@drawable/ic_videocam_on"
+                app:tint="@color/white" />
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/btnCameraFlip"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:background="@drawable/fab_shape"
+                android:backgroundTint="@color/dark_panel"
+                android:padding="16dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/btnMicToggle"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toEndOf="@+id/btnVideoCamToggle"
+                app:layout_constraintTop_toTopOf="parent"
+                app:srcCompat="@drawable/ic_camera_flip"
+                app:tint="@color/white" />
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/btnMicToggle"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:background="@drawable/fab_shape"
+                android:backgroundTint="@color/dark_panel"
+                android:padding="16dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toEndOf="@+id/btnCameraFlip"
+                app:layout_constraintTop_toTopOf="parent"
+                app:srcCompat="@drawable/ic_mic_on"
+                app:tint="@color/white" />
+
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
     </androidx.constraintlayout.widget.ConstraintLayout>
-
-<!--    <com.google.android.material.button.MaterialButton-->
-<!--        android:id="@+id/btnJoin"-->
-<!--        android:layout_width="wrap_content"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:text="Join"-->
-<!--        app:layout_constraintBottom_toBottomOf="parent"-->
-<!--        app:layout_constraintStart_toStartOf="parent"-->
-<!--        android:layout_margin="24dp"/>-->
-
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/btnLeave"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Leave"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_margin="24dp"/>
 
 
     <TextView
