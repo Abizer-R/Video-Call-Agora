@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/llContainer"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/fabClose"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/_16sdp"
+        android:layout_marginVertical="@dimen/_8sdp"
+        app:srcCompat="@drawable/ic_drag_handler"
+        app:tint="@color/white"
+        tools:tint="@color/black" />
+
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/cvParent"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:clickable="true"
+        android:clipToPadding="true"
+        android:focusable="true"
+        app:strokeWidth="0dp"
+        app:strokeColor="@color/backgroundColor"
+        app:cardBackgroundColor="@color/backgroundColor"
+        app:cardPreventCornerOverlap="false"
+        app:rippleColor="@android:color/transparent"
+        style="@style/topRoundedCornerShape24dp"/>
+
+</LinearLayout>
