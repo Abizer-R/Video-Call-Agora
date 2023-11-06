@@ -49,7 +49,6 @@ class VideoCallActivity : AppCompatActivity() {
     private lateinit var connectionLiveData: ConnectionLiveData
     private var connectionStatus = true
 
-    private var channelName: String? = null
     private var otherUid: String? = null
 
     private val mainViewModel by viewModels<MainViewModel>()
@@ -66,8 +65,8 @@ class VideoCallActivity : AppCompatActivity() {
     private val appId = "12b8c22e8a614433b6caa7ea43b3afb6"
 //    var appCertificate = "b5065fbfa5ed4d8aba0c25de974502b1"
     var expirationTimeInSeconds = 3600
-//    private val channelName = "abizer_rampurawala"
-    private val token = "007eJxTYGBQFdpr7bonS13mv8fp+b+VDPWkinIEXzp2Rn25t/hxs4ECg6FRkkWykVGqRaKZoYmJsXGSWXJionlqoolxknFiWpLZ81nuqQ2BjAwHFd6yMDJAIIgvxJCYlFmVWhRflJhbUFqUWJ6Yk8jAAAC3IiSq"
+    private val channelName = "abizer_rampurawala"
+    private val token = "007eJxTYPhWeFEjUun3nmdf3lZf2JHec38if/6vJdNitT9rtuwJYJihwGBolGSRbGSUapFoZmhiYmycZJacmGiemmhinGScmJZktvebR2pDICMDB9MGZkYGCATxhRgSkzKrUoviixJzC0qLEssTcxIZGABS3Cfa"
     private val currUid: Int = System.currentTimeMillis().toInt()
     private var isJoined = false
     private var agoraEngine: RtcEngine? = null
@@ -76,6 +75,11 @@ class VideoCallActivity : AppCompatActivity() {
 
     private val mRtcEventHandler: IRtcEngineEventHandler = object : IRtcEngineEventHandler() {
         // Listen for the remote host joining the channel to get the uid of the host.
+
+        override fun onError(err: Int) {
+            super.onError(err)
+            Log.e("TESTING", "onError: err = $err", )
+        }
         override fun onUserJoined(uid: Int, elapsed: Int) {
             showToast("Remote user joined $uid")
 
@@ -123,6 +127,8 @@ class VideoCallActivity : AppCompatActivity() {
             agoraEngine?.enableVideo()
             agoraEngine!!.muteLocalVideoStream(false)
             setupCallControls()
+
+            joinCall()
 
         } catch (e: Exception) {
             showToast(e.toString())
@@ -199,8 +205,7 @@ class VideoCallActivity : AppCompatActivity() {
         localSurfaceView!!.visibility = View.VISIBLE
     }
 
-    private fun joinCall(channelName: String) {
-        Toast.makeText(this@VideoCallActivity, "ChannelName = $channelName", Toast.LENGTH_LONG).show()
+    private fun joinCall() {
         Log.e("TESTING", "joinCall: ChannelName = $channelName", )
         if (checkSelfPermission()) {
             val options = ChannelMediaOptions()
@@ -297,13 +302,8 @@ class VideoCallActivity : AppCompatActivity() {
         setupUI()
         setupConnectionLiveData()
 
-        channelName = intent.getStringExtra(CHANNEL_NAME_EXTRA)
+//        channelName = intent.getStringExtra(CHANNEL_NAME_EXTRA)
         otherUid = intent.getStringExtra(UUID_EXTRA)
-        if(channelName.isNullOrBlank()) {
-            showToast("Something went wrong")
-        } else {
-            joinCall(channelName!!)
-        }
     }
 
     private fun setupUI() {

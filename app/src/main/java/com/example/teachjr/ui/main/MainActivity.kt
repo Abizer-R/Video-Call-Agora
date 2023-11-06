@@ -12,7 +12,14 @@ import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.NavController
+import androidx.navigation.fragment.NavHostFragment
+import androidx.navigation.ui.AppBarConfiguration
+import androidx.navigation.ui.navigateUp
+import androidx.navigation.ui.setupWithNavController
+import com.example.teachjr.R
 import com.example.teachjr.data.auth.model.CallStatus
 import com.example.teachjr.data.auth.model.FriendsListItem
 import com.example.teachjr.databinding.ActivityMainBinding
@@ -32,7 +39,7 @@ import kotlinx.coroutines.withContext
 
 
 @AndroidEntryPoint
-class MainActivity : AppCompatActivity(), FriendsListAdapter.FriendsAdapterListener {
+class MainActivity : AppCompatActivity() {
 
     private val TAG = MainActivity::class.java.simpleName
     private lateinit var binding: ActivityMainBinding
@@ -40,24 +47,10 @@ class MainActivity : AppCompatActivity(), FriendsListAdapter.FriendsAdapterListe
     private lateinit var connectionLiveData: ConnectionLiveData
     private var connectionStatus = true
 
+    private lateinit var navController: NavController
+    private lateinit var appBarConfiguration: AppBarConfiguration
+
     private val mainViewModel by viewModels<MainViewModel>()
-
-    private var preferenceManager: PreferenceManager? = null
-
-    private lateinit var friendsListAdapter: FriendsListAdapter
-
-    override fun onFriendClicked(friendItem: FriendsListItem) {
-        mainViewModel.otherUid = friendItem.uuid
-        mainViewModel.pushCallNotification(
-            friendItem.uuid,
-            callStatus = CallStatus(
-                otherUserName = preferenceManager?.getUsername(),
-                otherUserEmail = preferenceManager?.getEmail(),
-                otherUserUuid = FirebaseAuth.getInstance().currentUser?.uid,
-                status = CALL_STATUS_INCOMING_REQUEST
-            )
-        )
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -65,140 +58,26 @@ class MainActivity : AppCompatActivity(), FriendsListAdapter.FriendsAdapterListe
         setContentView(binding.root)
         window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
 
-
-        preferenceManager = PreferenceManager(this)
-        if(preferenceManager?.getUsername().isNullOrBlank()) {
-            mainViewModel.getUserDetails()
-        } else {
-            showUserDetails()
-        }
-
-        setupUI()
-        setupObservers()
         setupConnectionLiveData()
 
         mainViewModel.getFriendsList()
+
+
+        val navHostFragment = supportFragmentManager.findFragmentById(
+            binding.navHostContainer.id
+        ) as NavHostFragment
+        navController = navHostFragment.navController
+
+        // setup bottom navigation view
+        binding.bottomNavigationView.setupWithNavController(navController)
+
+        appBarConfiguration = AppBarConfiguration(
+            setOf(R.id.home, R.id.add_friends)
+        )
     }
 
-    private fun setupUI() {
-        with(binding) {
-            btnLogout.setOnClickListener {
-                preferenceManager?.logoutUser()
-                FirebaseAuth.getInstance().signOut()
-                val intent = Intent(this@MainActivity, AuthActivity::class.java)
-                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-                startActivity(intent)
-                finish()
-            }
-
-            friendsListAdapter = FriendsListAdapter(this@MainActivity)
-            rvFriends.adapter = friendsListAdapter
-
-            btnAccept.setOnClickListener {
-                startActivity(Intent(this@MainActivity, VideoCallActivity::class.java).apply {
-                    putExtra(VideoCallActivity.CHANNEL_NAME_EXTRA, mainViewModel.callStatus.value?.otherUserUuid)
-                })
-            }
-
-            btnReject.setOnClickListener {
-                val userUid = FirebaseAuth.getInstance().currentUser?.uid!!
-                mainViewModel.pushCallNotification(
-                    userUid,
-                    callStatus = CallStatus(
-                        otherUserName = preferenceManager?.getUsername(),
-                        otherUserEmail = preferenceManager?.getEmail(),
-                        otherUserUuid = userUid,
-                        status = CALL_STATUS_NOTHING
-                    )
-                )
-            }
-        }
-    }
-
-    private fun showUserDetails() {
-        binding.cvUserDetails.isVisible = true
-        binding.tvCurrentName.text = preferenceManager?.getUsername()
-        binding.tvCurrentEmail.text = preferenceManager?.getEmail()
-    }
-
-    private fun setupObservers() {
-        mainViewModel.friendsList.observe(this) {
-            when(it) {
-                is Response.Loading -> {
-//                    binding.progressBar.visibility = View.VISIBLE
-                }
-                is Response.Error -> {
-                    Log.i(TAG, "StudentTesting_HomePage: CourseList_Error - ${it.errorMessage}")
-                    showToast(it.errorMessage.toString())
-                }
-                is Response.Success -> {
-                    if(it.data != null) {
-                        friendsListAdapter.submitList(it.data)
-                    } else {
-                        showToast("List is null")
-                    }
-                }
-            }
-        }
-
-        mainViewModel.observeCallStatus()
-
-        mainViewModel.callStatus.observe(this) {
-            Log.e("TESTING", "setupObservers: callStatus = $it", )
-            if(it.otherUserUuid.isNullOrBlank().not() && it.status.isNullOrBlank().not()) {
-
-                when(it.status) {
-                    CALL_STATUS_INCOMING_REQUEST -> {
-                        binding.cvIncomingCall.isVisible = true
-                        binding.tvOtherName.text = it.otherUserName
-                    }
-
-                    else -> {
-                        binding.cvIncomingCall.isVisible = false
-                    }
-                }
-            }
-        }
-
-        mainViewModel.userDetails.observe(this) {
-            when(it) {
-                is Response.Loading -> {
-                }
-                is Response.Error -> {
-                    showToast("Couldn't fetch user details")
-                }
-                is Response.Success -> {
-
-                    if(it.data != null) {
-                        preferenceManager?.saveUsername(it.data.username)
-                        preferenceManager?.saveEmail(it.data.email)
-                        showUserDetails()
-                    } else {
-                        showToast("Couldn't fetch user details")
-                    }
-                }
-            }
-        }
-
-        mainViewModel.outgoingCallStatus.observe(this) {
-            when(it) {
-                is Response.Error -> {
-                    showToast(it.toString())
-                }
-                is Response.Loading -> {}
-                is Response.Success -> {
-                    startActivity(Intent(this@MainActivity, VideoCallActivity::class.java).apply {
-                        putExtra(VideoCallActivity.CHANNEL_NAME_EXTRA, FirebaseAuth.getInstance().currentUser?.uid)
-                        putExtra(VideoCallActivity.UUID_EXTRA, mainViewModel.otherUid)
-                    })
-                }
-            }
-        }
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        preferenceManager = null
+    override fun onSupportNavigateUp(): Boolean {
+        return navController.navigateUp(appBarConfiguration)
     }
 
 

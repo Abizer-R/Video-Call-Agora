@@ -23,4 +23,22 @@
         <item name="cornerFamily">rounded</item>
         <item name="cornerSize">50%</item>
     </style>
+
+    <style name="BaseBottomSheetDialogTheme" parent="Theme.Material3.Dark.BottomSheetDialog">
+        <item name="bottomSheetStyle">@style/BaseBottomSheetStyle</item>
+        <item name="behavior_draggable">false</item>
+        <item name="colorPrimary">@color/dark_panel</item>
+        <item name="colorPrimaryDark">@color/dark_panel</item>
+        <item name="colorAccent">@color/green</item>
+    </style>
+
+    <style name="BaseBottomSheetStyle" parent="Widget.Material3.BottomSheet.Modal">
+        <item name="android:background">@android:color/transparent</item>
+    </style>
+
+    <style name="topRoundedCornerShape24dp">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSizeTopLeft">@dimen/_24sdp</item>
+        <item name="cornerSizeTopRight">@dimen/_24sdp</item>
+    </style>
 </resources>

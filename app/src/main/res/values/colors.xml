@@ -11,6 +11,8 @@
     <color name="primary">#283557</color>
     <color name="primaryLight">#545e84</color>
     <color name="primaryDark">#000f2e</color>
+    <color name="backgroundColor">#171717</color>
+    <color name="colorOnBackground">#FFFFFF</color>
 
     <color name="secondary">#2ea7a2</color>
     <color name="secondaryLight">#69d9d3</color>
