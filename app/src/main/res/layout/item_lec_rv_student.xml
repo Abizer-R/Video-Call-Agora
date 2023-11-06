@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.appcompat.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="horizontal"
+    android:layout_marginBottom="16dp">
+
+    <TextView
+        android:id="@+id/tvLecNum"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="16sp"
+        android:text="Lec_1: " />
+
+    <TextView
+        android:id="@+id/tvLecDate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="5th Oct, 2022"
+        android:textSize="16sp"
+        android:layout_weight="1"
+        android:gravity="end"/>
+
+</androidx.appcompat.widget.LinearLayoutCompat>

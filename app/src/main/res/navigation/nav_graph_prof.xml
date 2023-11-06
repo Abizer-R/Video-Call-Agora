@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph_prof"
+    app:startDestination="@id/profHomeFragment">
+
+    <fragment
+        android:id="@+id/profHomeFragment"
+        android:name="com.example.teachjr.ui.professor.profFragments.ProfHomeFragment"
+        android:label="Courses"
+        tools:layout="@layout/fragment_prof_home" >
+        <action
+            android:id="@+id/action_profHomeFragment_to_profCourseDetailsFragment"
+            app:destination="@id/profCourseDetailsFragment"
+            app:enterAnim="@anim/slide_in_from_right"
+            app:exitAnim="@anim/fade_out"
+            app:popEnterAnim="@anim/fade_in"
+            app:popExitAnim="@anim/slide_out_to_left" />
+        <action
+            android:id="@+id/action_profHomeFragment_to_profProfileFragment"
+            app:destination="@id/profProfileFragment"
+            app:enterAnim="@anim/slide_in_from_top"
+            app:exitAnim="@anim/fade_out"
+            app:popEnterAnim="@anim/fade_in"
+            app:popExitAnim="@anim/slide_out_to_bottom" />
+    </fragment>
+    <fragment
+        android:id="@+id/profCourseDetailsFragment"
+        android:name="com.example.teachjr.ui.professor.profFragments.ProfCourseDetailsFragment"
+        android:label="Course Details"
+        tools:layout="@layout/fragment_prof_course_details" >
+        <action
+            android:id="@+id/action_profCourseDetailsFragment_to_profMarkAtdFragment"
+            app:destination="@id/profMarkAtdFragment"
+            app:popEnterAnim="@anim/fade_in"
+            app:popExitAnim="@anim/slide_out_to_left" />
+        <action
+            android:id="@+id/action_profCourseDetailsFragment_to_profAtdReportFragment"
+            app:destination="@id/profAtdReportFragment"
+            app:enterAnim="@anim/slide_in_from_right"
+            app:exitAnim="@anim/fade_out"
+            app:popEnterAnim="@anim/fade_in"
+            app:popExitAnim="@anim/slide_out_to_left" />
+    </fragment>
+    <fragment
+        android:id="@+id/profMarkAtdFragment"
+        android:name="com.example.teachjr.ui.professor.profFragments.ProfMarkAtdFragment"
+        android:label="Mark Attendance"
+        tools:layout="@layout/fragment_prof_mark_atd" />
+    <fragment
+        android:id="@+id/profAtdReportFragment"
+        android:name="com.example.teachjr.ui.professor.profFragments.ProfAtdReportFragment"
+        android:label="Attendance Report"
+        tools:layout="@layout/fragment_prof_atd_report" >
+        <action
+            android:id="@+id/action_profAtdReportFragment_to_profExcelSheetFragment"
+            app:destination="@id/profExcelSheetFragment"
+            app:enterAnim="@anim/slide_in_from_right"
+            app:exitAnim="@anim/fade_out"
+            app:popEnterAnim="@anim/fade_in"
+            app:popExitAnim="@anim/slide_out_to_left" />
+    </fragment>
+    <fragment
+        android:id="@+id/profProfileFragment"
+        android:name="com.example.teachjr.ui.professor.profFragments.ProfProfileFragment"
+        android:label="fragment_prof_profile"
+        tools:layout="@layout/fragment_prof_profile" />
+    <fragment
+        android:id="@+id/profExcelSheetFragment"
+        android:name="com.example.teachjr.ui.professor.profFragments.ProfExcelSheetFragment"
+        android:label="fragment_prof_excel_sheet"
+        tools:layout="@layout/fragment_prof_excel_sheet" />
+</navigation>

@@ -1,0 +1,15 @@
+<component name="libraryTable">
+  <library name="Gradle: io.agora.rtc:full-sdk:4.0.1@aar">
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-3/bd36c46f2d1dfa9b6d9898579525af01/transformed/full-sdk-4.0.1/jars/classes.jar!/" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-3/bd36c46f2d1dfa9b6d9898579525af01/transformed/full-sdk-4.0.1/jars/libs/agora-rtc-sdk-javadoc.jar!/" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-3/bd36c46f2d1dfa9b6d9898579525af01/transformed/full-sdk-4.0.1/jars/libs/agora-rtc-sdk.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-3/bd36c46f2d1dfa9b6d9898579525af01/transformed/full-sdk-4.0.1/res" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-3/bd36c46f2d1dfa9b6d9898579525af01/transformed/full-sdk-4.0.1/AndroidManifest.xml" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-3/bd36c46f2d1dfa9b6d9898579525af01/transformed/full-sdk-4.0.1/jars/libs/agora-rtc-sdk-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES />
+  </library>
+</component>

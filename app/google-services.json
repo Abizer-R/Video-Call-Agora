@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "722573671992",
+    "project_id": "teach-jr",
+    "storage_bucket": "teach-jr.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:722573671992:android:0a98921dbd2337d00570cd",
+        "android_client_info": {
+          "package_name": "com.example.teachjr"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "722573671992-c9emk6m5lljtiirelu5jll4b9uhh40pp.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBZZCR3goemLcvu2I5pdnKkZIt4k__aLB8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "722573671992-c9emk6m5lljtiirelu5jll4b9uhh40pp.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

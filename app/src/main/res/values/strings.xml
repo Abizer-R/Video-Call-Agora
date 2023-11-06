@@ -1,0 +1,21 @@
+<resources>
+    <string name="app_name">Video Call App</string>
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+
+
+    <string name="create_new_account_text">Create New Account</string>
+    <string name="welcome_back_text">Welcome Back</string>
+    <string name="provide_details_text">Please provide following details</string>
+    <string name="username_label">Username</string>
+    <string name="username_example">\'example_username\'</string>
+    <string name="email_label">Email</string>
+    <string name="email_example">\'example@gmail.com\'</string>
+    <string name="password_label">Password</string>
+    <string name="password_example">********</string>
+
+    <string name="signup_label">Sign Up</string>
+    <string name="signin_label">Sign In</string>
+    <string name="already_have_an_account_text">Already have an account?</string>
+    <string name="dont_have_an_account_text">Don\'t have an account?</string>
+</resources>
