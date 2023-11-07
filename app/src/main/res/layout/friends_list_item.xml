@@ -19,13 +19,12 @@
             android:id="@+id/tvName"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginHorizontal="24dp"
             android:ellipsize="end"
             android:maxLines="1"
             android:text="Dummy Friend"
             android:textColor="@color/white"
-            android:textSize="24sp"
-            app:layout_constraintEnd_toStartOf="@+id/btnToggleRequest"
+            android:textSize="20sp"
+            app:layout_constraintEnd_toStartOf="@+id/btnSecondary"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -44,12 +43,29 @@
             app:layout_constraintTop_toBottomOf="@+id/tvName" />
 
         <com.google.android.material.button.MaterialButton
-            android:id="@+id/btnToggleRequest"
+            android:id="@+id/btnSecondary"
+            android:visibility="gone"
+            tools:visibility="visible"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="reject"
+            android:textColor="@color/white"
+            android:minHeight="@dimen/_28sdp"
+            android:layout_marginEnd="@dimen/_4sdp"
+            android:backgroundTint="@color/red"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/btnPrimary"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnPrimary"
             android:visibility="gone"
             tools:visibility="visible"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="accept"
+            android:textColor="@color/white"
+            android:minHeight="@dimen/_28sdp"
             android:backgroundTint="@color/green"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"

@@ -28,9 +28,6 @@ class FriendsListAdapter(
         fun bind(friendItem: FriendsListItem) {
             with(binding) {
                 tvName.text = friendItem.name
-                root.setOnClickListener {
-                    listener.onFriendClicked(currentList[adapterPosition])
-                }
 
                 if(friendItem.email.isNotBlank()) {
                     tvEmail.text = friendItem.email
@@ -40,17 +37,33 @@ class FriendsListAdapter(
                 when(friendItem.btnType) {
                     FriendButtonType.NO_BUTTON -> {}
                     FriendButtonType.REQUEST_SENT -> {
-                        btnToggleRequest.text = "Reject"
-                        btnToggleRequest.setBackgroundColor(ContextCompat.getColor(root.context, R.color.red))
-                        btnToggleRequest.isVisible = true
+                        btnPrimary.text = "Cancel"
+                        btnPrimary.setBackgroundColor(ContextCompat.getColor(root.context, R.color.light_gray_2))
+                        btnPrimary.isVisible = true
+                        btnPrimary.setOnClickListener {
+                            listener.onRequestCancelled(currentList[adapterPosition], adapterPosition)
+                        }
                     }
 
                     FriendButtonType.REQUEST_RECEIVED -> {
-                        btnToggleRequest.text = "Accept"
-                        btnToggleRequest.setBackgroundColor(ContextCompat.getColor(root.context, R.color.green))
-                        btnToggleRequest.isVisible = true
+                        btnPrimary.text = "Accept"
+                        btnPrimary.setBackgroundColor(ContextCompat.getColor(root.context, R.color.green))
+                        btnPrimary.isVisible = true
+                        btnPrimary.setOnClickListener {
+                            listener.onRequestAccepted(currentList[adapterPosition], adapterPosition)
+                        }
 
+                        btnSecondary.text = "Reject"
+                        btnSecondary.setBackgroundColor(ContextCompat.getColor(root.context, R.color.red))
+                        btnSecondary.isVisible = true
+                        btnSecondary.setOnClickListener {
+                            listener.onRequestCancelled(currentList[adapterPosition], adapterPosition)
+                        }
                     }
+                }
+
+                root.setOnClickListener {
+                    listener.onFriendClicked(currentList[adapterPosition], adapterPosition)
                 }
             }
         }
@@ -69,6 +82,8 @@ class FriendsListAdapter(
     }
 
     interface FriendsAdapterListener {
-        fun onFriendClicked(friendItem: FriendsListItem)
+        fun onFriendClicked(friendItem: FriendsListItem, position: Int)
+        open fun onRequestCancelled(friendItem: FriendsListItem, position: Int)
+        open fun onRequestAccepted(friendItem: FriendsListItem, position: Int)
     }
 }

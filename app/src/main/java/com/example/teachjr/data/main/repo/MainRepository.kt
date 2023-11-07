@@ -129,6 +129,42 @@ class MainRepository
         }
     }
 
+    suspend fun cancelFriendRequest(userUuid: String): String {
+        return suspendCoroutine { continuation ->
+
+            val collection = FirebasePaths.FRIENDS_COLLECTION
+            val updates = mutableMapOf<String, Any?>()
+            updates["$collection/$userUuid/${currentUser.uid}"] = null
+            updates["$collection/${currentUser.uid}/$userUuid"] = null
+
+            dbRef.reference.updateChildren(updates)
+                .addOnSuccessListener {
+                    continuation.resume(FirebaseConstants.STATUS_SUCCESSFUL)
+                }
+                .addOnFailureListener {
+                    continuation.resume(it.message.toString())
+                }
+        }
+    }
+
+    suspend fun addFriend(friend: FriendsListItem, currUsername: String): String {
+        return suspendCoroutine { continuation ->
+
+            val collection = FirebasePaths.USER_COLLECTION
+            val updates = mutableMapOf<String, Any?>()
+            updates["$collection/${friend.uuid}/${FRIENDS_LIST_KEY}/${currentUser.uid}"] = currUsername
+            updates["$collection/${currentUser.uid}/${FRIENDS_LIST_KEY}/${friend.uuid}"] = friend.name
+
+            dbRef.reference.updateChildren(updates)
+                .addOnSuccessListener {
+                    continuation.resume(FirebaseConstants.STATUS_SUCCESSFUL)
+                }
+                .addOnFailureListener {
+                    continuation.resume(it.message.toString())
+                }
+        }
+    }
+
     /**
      * This flow will get cancelled when prof will leave the MarkAtdFragment
      */
@@ -231,30 +267,30 @@ class MainRepository
             }
 
             override fun onChildAdded(snapshot: DataSnapshot, previousChildName: String?) {
-                Log.e(TAG, "MainTesting_ProRepo - onChildAdded: snapshot - $snapshot, prevChildName - $previousChildName")
 
                 if(snapshot.value != FirebasePaths.FRIENDS_STATUS_SELF) {
                     val mMap = mutableMapOf<String, String>()
                     mMap[snapshot.key.toString()] = snapshot.value.toString()
+                    Log.e("TESTING3", "onChildAdded: map = $mMap", )
                     trySend(Pair(true, mMap)).isSuccess
                 }
             }
 
             override fun onChildChanged(snapshot: DataSnapshot, previousChildName: String?) {
-                Log.e(TAG, "MainTesting_ProRepo - onChildChanged: snapshot - $snapshot, prevChildName - $previousChildName")
 
                 if(snapshot.value != FirebasePaths.FRIENDS_STATUS_SELF) {
                     val mMap = mutableMapOf<String, String>()
                     mMap[snapshot.key.toString()] = snapshot.value.toString()
+                    Log.e("TESTING3", "onChildChanged: map = $mMap", )
                     trySend(Pair(true, mMap)).isSuccess
                 }
             }
 
             override fun onChildRemoved(snapshot: DataSnapshot) {
-                Log.e(TAG, "MainTesting_ProRepo - onChildRemoved: snapshot - $snapshot")
                 if(snapshot.value != FirebasePaths.FRIENDS_STATUS_SELF) {
                     val mMap = mutableMapOf<String, String>()
                     mMap[snapshot.key.toString()] = snapshot.value.toString()
+                    Log.e("TESTING3", "onChildRemoved: map = $mMap", )
                     trySend(Pair(false, mMap)).isSuccess
                 }
             }

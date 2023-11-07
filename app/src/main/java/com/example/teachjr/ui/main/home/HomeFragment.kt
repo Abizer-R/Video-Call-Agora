@@ -172,7 +172,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(
         }
     }
 
-    override fun onFriendClicked(friendItem: FriendsListItem) {
+    override fun onFriendClicked(friendItem: FriendsListItem, position: Int) {
         mainViewModel.otherUid = friendItem.uuid
         mainViewModel.pushCallNotification(
             friendItem.uuid,
@@ -183,6 +183,14 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(
                 status = FirebasePaths.CALL_STATUS_INCOMING_REQUEST
             )
         )
+    }
+
+    override fun onRequestCancelled(friendItem: FriendsListItem, position: Int) {
+        // pass
+    }
+
+    override fun onRequestAccepted(friendItem: FriendsListItem, position: Int) {
+        // pass
     }
 
     override fun onDestroy() {

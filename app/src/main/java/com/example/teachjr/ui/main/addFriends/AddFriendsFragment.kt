@@ -104,14 +104,23 @@ class AddFriendsFragment : BaseFragment<FragmentAddFriendsBinding>(
         mainViewModel.requestMap.observe(this) {
             Log.e("TESTING2", "setupObservers: it = $it", )
             val idx = it.values.indexOfFirst {
-                it == FirebasePaths.FRIENDS_STATUS_REQUEST_RECEIVED
+                it == FirebasePaths.FRIENDS_STATUS_REQUEST_RECEIVED || it == FirebasePaths.FRIENDS_STATUS_REQUEST_SENT
             }
             binding.btnPendingRequests.isVisible = idx >= 0 && idx < it.values.size
+            mainViewModel.updatePendingRequests()
         }
     }
 
-    override fun onFriendClicked(friendItem: FriendsListItem) {
+    override fun onFriendClicked(friendItem: FriendsListItem, position: Int) {
         mainViewModel.sendFriendRequest(friendItem.uuid)
+    }
+
+    override fun onRequestCancelled(friendItem: FriendsListItem, position: Int) {
+        // pass
+    }
+
+    override fun onRequestAccepted(friendItem: FriendsListItem, position: Int) {
+        // pass
     }
 
     private fun showToast(msg: String) {

@@ -45,6 +45,10 @@ class MainViewModel
     val requestMap: LiveData<Map<String, String>>
         get() = _requestMap
 
+    private val _pendingRequestList = MutableLiveData<List<FriendsListItem>>(emptyList())
+    val pendingRequestList: LiveData<List<FriendsListItem>>
+        get() = _pendingRequestList
+
 
     private val _callStatus = MutableLiveData<CallStatus>()
     val callStatus: LiveData<CallStatus>
@@ -128,6 +132,15 @@ class MainViewModel
         mainRepository.sendFriendRequest(userUuid)
     }
 
+    fun cancelFriendRequest(userUuid: String) = viewModelScope.launch{
+        mainRepository.cancelFriendRequest(userUuid)
+    }
+
+    fun acceptFriendRequest(friend: FriendsListItem, currUsername: String) = viewModelScope.launch{
+        mainRepository.addFriend(friend, currUsername)
+        mainRepository.cancelFriendRequest(friend.uuid)
+    }
+
     /**
      * To understand why we are using 'suspend fun',
      * read the note in ProfMarkAtdFrag (in setupObserver())
@@ -169,7 +182,7 @@ class MainViewModel
                                 prevMap.remove(it)
                             }
                         }
-                        Log.e("TESTING2", "observeFriendRequests: prevMap = $prevMap", )
+                        Log.e("TESTING3", "observeFriendRequests: prevMap = $prevMap", )
                         _requestMap.postValue(prevMap)
                     }
             }
@@ -189,26 +202,33 @@ class MainViewModel
         }
     }
 
-    fun getPendingRequests(): List<FriendsListItem> {
+    fun updatePendingRequests() {
         val requestsList = mutableListOf<FriendsListItem>()
 
-        requestMap.value!!.keys.forEach { userUuid ->
+        requestMap.value!!.forEach { mapItem ->
+            val userUuid = mapItem.key
             val user = usersList.value!!.data!!.find {
                 it.uuid == userUuid
             }
             if(user != null) {
+                Log.e("TESTING3", "getPendingRequests: user = $user", )
+                val buttonType = when(mapItem.value) {
+                    FirebasePaths.FRIENDS_STATUS_REQUEST_SENT -> FriendButtonType.REQUEST_SENT
+                    FirebasePaths.FRIENDS_STATUS_REQUEST_RECEIVED -> FriendButtonType.REQUEST_RECEIVED
+                    else -> FriendButtonType.NO_BUTTON
+                }
                 requestsList.add(
                     FriendsListItem(
                         uuid = user.uuid,
                         name = user.name,
                         email = user.email,
-                        btnType = FriendButtonType.REQUEST_RECEIVED
+                        btnType = buttonType
                     )
                 )
             }
         }
 
-        return requestsList
+        _pendingRequestList.postValue(requestsList)
     }
 
 }

@@ -1,5 +1,6 @@
 package com.example.teachjr.ui.main.friendRequest
 
+import PreferenceManager
 import android.content.Context
 import android.content.DialogInterface
 import android.content.res.Resources
@@ -10,6 +11,7 @@ import android.widget.Toast
 import androidx.core.view.isVisible
 import androidx.fragment.app.activityViewModels
 import androidx.viewbinding.ViewBinding
+import com.example.teachjr.data.auth.model.FriendButtonType
 import com.example.teachjr.data.auth.model.FriendsListItem
 import com.example.teachjr.databinding.FriendRequestBottomSheetBinding
 import com.example.teachjr.ui.base.BaseBottomSheetDialog
@@ -25,6 +27,7 @@ class FriendRequestsBottomSheet : BaseBottomSheetDialog(),
     private val mainViewModel by activityViewModels<MainViewModel>()
 
     private lateinit var friendsListAdapter: FriendsListAdapter
+    private var preferenceManager: PreferenceManager? = null
 
     companion object {
         fun newInstance() = FriendRequestsBottomSheet().apply {
@@ -51,6 +54,7 @@ class FriendRequestsBottomSheet : BaseBottomSheetDialog(),
         bottomSheetBehavior.peekHeight = peekHeight
         setContentHeight(true)
 
+        preferenceManager = PreferenceManager(requireContext())
         setUpViews()
     }
 
@@ -58,11 +62,16 @@ class FriendRequestsBottomSheet : BaseBottomSheetDialog(),
         with(binding) {
             friendsListAdapter = FriendsListAdapter(this@FriendRequestsBottomSheet)
             rvRequests.adapter = friendsListAdapter
-            Log.e("TESTING2", "setUpViews: pendingRequests = ${mainViewModel.getPendingRequests()}", )
         }
 
-        val requestList = mainViewModel.getPendingRequests()
-        friendsListAdapter.submitList(requestList)
+//        val requestList = mainViewModel.getPendingRequests()
+
+
+        mainViewModel.pendingRequestList.observe(viewLifecycleOwner) {requestList ->
+            Log.e("TESTING3", "setUpViews: requestList = $requestList", )
+            friendsListAdapter.submitList(requestList)
+            binding.tvEmpty.isVisible = requestList.isEmpty()
+        }
     }
 
     private fun getDisplayHeight(): Int = Resources.getSystem().displayMetrics.heightPixels
@@ -98,6 +107,7 @@ class FriendRequestsBottomSheet : BaseBottomSheetDialog(),
         super.onDetach()
 
         listener = null
+        preferenceManager = null
     }
 
     private fun showToast(msg: String) {
@@ -106,20 +116,16 @@ class FriendRequestsBottomSheet : BaseBottomSheetDialog(),
         }
     }
 
-    override fun onFriendClicked(friendItem: FriendsListItem) {
-        showToast("friend = ${friendItem.name}")
+    override fun onFriendClicked(friendItem: FriendsListItem, position: Int) {
+//        showToast("friend = ${friendItem.name}")
+    }
 
+    override fun onRequestCancelled(friendItem: FriendsListItem, position: Int) {
+        mainViewModel.cancelFriendRequest(friendItem.uuid)
+    }
 
-        /**
-         *
-         *  TODO: Implement this feature
-         *
-         *
-         */
-
-
-
-
+    override fun onRequestAccepted(friendItem: FriendsListItem, position: Int) {
+        mainViewModel.acceptFriendRequest(friendItem, preferenceManager?.getUsername() ?: "")
     }
 
     interface FriendRequestBsListener {
