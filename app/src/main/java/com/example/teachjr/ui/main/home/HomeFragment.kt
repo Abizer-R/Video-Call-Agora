@@ -86,6 +86,10 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(
                     )
                 )
             }
+
+            swipeRefreshLayout.setOnRefreshListener {
+                mainViewModel.getFriendsList()
+            }
         }
     }
 
@@ -99,13 +103,14 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(
         mainViewModel.friendsList.observe(this) {
             when(it) {
                 is Response.Loading -> {
-//                    binding.progressBar.visibility = View.VISIBLE
+                    binding.swipeRefreshLayout.isRefreshing = true
                 }
                 is Response.Error -> {
-                    Log.i(TAG, "StudentTesting_HomePage: CourseList_Error - ${it.errorMessage}")
+                    binding.swipeRefreshLayout.isRefreshing = false
                     showToast(it.errorMessage.toString())
                 }
                 is Response.Success -> {
+                    binding.swipeRefreshLayout.isRefreshing = false
                     if(it.data != null) {
                         friendsListAdapter.submitList(it.data)
                     } else {
