@@ -28,7 +28,7 @@
         android:inputType="text"
         android:lines="1"
         android:maxLength="25"
-        android:textColor="@color/white"
+        android:textColor="@color/colorOnBackground"
         android:textColorHint="@color/light_gray"
         android:textSize="@dimen/_12ssp"
         app:layout_constraintBottom_toBottomOf="parent"

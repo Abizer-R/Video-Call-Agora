@@ -66,7 +66,7 @@ class VideoCallActivity : AppCompatActivity() {
 //    var appCertificate = "b5065fbfa5ed4d8aba0c25de974502b1"
     var expirationTimeInSeconds = 3600
     private val channelName = "abizer_rampurawala"
-    private val token = "007eJxTYPhWeFEjUun3nmdf3lZf2JHec38if/6vJdNitT9rtuwJYJihwGBolGSRbGSUapFoZmhiYmycZJacmGiemmhinGScmJZktvebR2pDICMDB9MGZkYGCATxhRgSkzKrUoviixJzC0qLEssTcxIZGABS3Cfa"
+    private val token = "007eJxTYMhrkTjnzTlx2rV3XHcu6SXPTtc5k73CJZzz1mJTHtbSLEsFBkOjJItkI6NUi0QzQxMTY+Mks+TERPPURBPjJOPEtCSz1tUvUxsCGRnY9yUxMjJAIIgvxJCYlFmVWhRflJhbUFqUWJ6Yk8jAAADBCiQS"
     private val currUid: Int = System.currentTimeMillis().toInt()
     private var isJoined = false
     private var agoraEngine: RtcEngine? = null

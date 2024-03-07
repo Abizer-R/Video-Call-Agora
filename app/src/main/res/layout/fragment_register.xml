@@ -5,7 +5,8 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:scrollbars="none"
-    android:overScrollMode="ifContentScrolls">
+    android:overScrollMode="ifContentScrolls"
+    android:background="@color/backgroundColor">
 
     <androidx.appcompat.widget.LinearLayoutCompat
         android:layout_width="match_parent"
@@ -19,14 +20,15 @@
             android:text="@string/create_new_account_text"
             android:textStyle="bold"
             android:textSize="30sp"
-            android:textColor="@color/black"
+            android:textColor="@color/colorOnBackground"
             android:layout_marginTop="24dp" />
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/provide_details_text"
-            android:textSize="16sp" />
+            android:textSize="16sp"
+            android:textColor="@color/colorOnBackground" />
 
 
 
@@ -37,7 +39,7 @@
             android:layout_height="wrap_content"
             android:text="@string/username_label"
             android:textSize="12sp"
-            android:textColor="@color/black"
+            android:textColor="@color/colorOnBackground"
             android:layout_marginTop="32dp" />
 
         <EditText
@@ -46,7 +48,9 @@
             android:layout_height="wrap_content"
             android:hint="@string/username_example"
             android:importantForAutofill="no"
-            android:inputType="text" />
+            android:inputType="text"
+            android:textColorHint="@color/light_gray_1"
+            android:textColor="@color/colorOnBackground" />
 
 
 
@@ -57,7 +61,7 @@
             android:layout_height="wrap_content"
             android:text="@string/email_label"
             android:textSize="12sp"
-            android:textColor="@color/black"
+            android:textColor="@color/colorOnBackground"
             android:layout_marginTop="24dp"/>
 
         <EditText
@@ -66,7 +70,9 @@
             android:layout_height="wrap_content"
             android:hint="@string/email_example"
             android:importantForAutofill="no"
-            android:inputType="textEmailAddress"/>
+            android:inputType="textEmailAddress"
+            android:textColorHint="@color/light_gray_1"
+            android:textColor="@color/colorOnBackground"/>
 
 
 
@@ -77,7 +83,7 @@
             android:layout_height="wrap_content"
             android:text="@string/password_label"
             android:textSize="12sp"
-            android:textColor="@color/black"
+            android:textColor="@color/colorOnBackground"
             android:layout_marginTop="24dp"/>
 
         <EditText
@@ -87,7 +93,9 @@
             android:inputType="textPassword"
             android:hint="@string/password_example"
             android:importantForAutofill="no"
-            android:layout_marginBottom="16dp"/>
+            android:layout_marginBottom="16dp"
+            android:textColorHint="@color/light_gray_1"
+            android:textColor="@color/colorOnBackground"/>
 
 
         <ProgressBar
@@ -95,8 +103,7 @@
             android:id="@+id/progressBar"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:indeterminateTint="@color/black"/>
+            android:layout_gravity="center_horizontal"/>
 
         <TextView
             android:id="@+id/tvError"
@@ -112,7 +119,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/signup_label"
-            android:backgroundTint="@color/black"
+            android:backgroundTint="@color/primary"
             app:cornerRadius="5dp"/>
 
         <androidx.appcompat.widget.LinearLayoutCompat
@@ -128,7 +135,7 @@
                 android:layout_height="wrap_content"
                 android:text="@string/already_have_an_account_text"
                 android:textSize="16sp"
-                android:textColor="@color/black" />
+                android:textColor="@color/colorOnBackground" />
 
             <TextView
                 android:layout_width="wrap_content"

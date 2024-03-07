@@ -22,8 +22,11 @@
     <color name="green">#0EC921</color>
 
 
-    <color name="light_gray">#e0e0e0</color>
     <color name="blue">#43abfd</color>
     <color name="dark_panel">#272626</color>
+    <color name="light_gray">#e0e0e0</color>
+    <color name="light_gray_1">#989696</color>
     <color name="light_gray_2">#3A3939</color>
+
+    <color name="color_btn">#3A3939</color>
 </resources>

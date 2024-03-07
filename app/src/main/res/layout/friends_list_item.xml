@@ -4,15 +4,15 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    app:cardCornerRadius="10dp"
+    app:cardCornerRadius="8dp"
     app:cardElevation="4dp"
-    android:layout_margin="8dp"
+    android:layout_marginTop="@dimen/_16sdp"
     android:backgroundTint="@color/dark_panel">
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="@dimen/_8sdp">
+        android:padding="@dimen/_16sdp">
 
 
         <TextView
@@ -22,7 +22,7 @@
             android:ellipsize="end"
             android:maxLines="1"
             android:text="Dummy Friend"
-            android:textColor="@color/white"
+            android:textColor="@color/colorOnBackground"
             android:textSize="20sp"
             app:layout_constraintEnd_toStartOf="@+id/btnSecondary"
             app:layout_constraintStart_toStartOf="parent"
@@ -33,7 +33,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:text="dummyEmail@gmail.com"
-            android:textColor="@color/white"
+            android:textColor="@color/colorOnBackground"
             android:visibility="gone"
             tools:visibility="visible"
             android:ellipsize="end"
@@ -49,7 +49,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="reject"
-            android:textColor="@color/white"
+            android:textColor="@color/colorOnBackground"
             android:minHeight="@dimen/_28sdp"
             android:layout_marginEnd="@dimen/_4sdp"
             android:backgroundTint="@color/red"
@@ -64,7 +64,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="accept"
-            android:textColor="@color/white"
+            android:textColor="@color/colorOnBackground"
             android:minHeight="@dimen/_28sdp"
             android:backgroundTint="@color/green"
             app:layout_constraintBottom_toBottomOf="parent"
